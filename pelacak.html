@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Coordinates and Battery Status</title>
+</head>
+<body>
+    <h1>Get Coordinates and Battery Status</h1>
+    <button onclick="getDeviceInfo()">Get Location and Battery Status</button>
+    <p id="coordinates"></p>
+    <p id="battery"></p>
+
+    <script>
+        function getDeviceInfo() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                document.getElementById("coordinates").innerHTML = "Geolocation is not supported by this browser.";
+            }
+
+            if (navigator.getBattery) {
+                navigator.getBattery().then(showBatteryStatus);
+            } else {
+                document.getElementById("battery").innerHTML = "Battery API is not supported by this browser.";
+            }
+        }
+
+        function showPosition(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            document.getElementById("coordinates").innerHTML = "Latitude: " + latitude + "<br>Longitude: " + longitude;
+        }
+
+        function showBatteryStatus(battery) {
+            var batteryLevel = battery.level * 100;
+            document.getElementById("battery").innerHTML = "Battery Level: " + batteryLevel + "%";
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("coordinates").innerHTML = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("coordinates").innerHTML = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("coordinates").innerHTML = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById("coordinates").innerHTML = "An unknown error occurred."
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
